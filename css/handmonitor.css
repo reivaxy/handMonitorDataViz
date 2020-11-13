@@ -34,13 +34,6 @@ rect.pane {
     pointer-events: all;
 }
 
-#chart_placeholder {
-    width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-}
-
 .graph {
     padding-top: 100px;
 }

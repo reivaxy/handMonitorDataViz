@@ -101,8 +101,8 @@
         }
     }
 
-    var margin = {top: 10, right: 10, bottom: 100, left: 40},
-        width = 900 - margin.left - margin.right,
+    var margin = {top: 10, right: 50, bottom: 100, left: 50},
+        width =  window.innerWidth - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%d/%m/%Y %H:%M:%S").parse;
@@ -144,47 +144,60 @@
                 break;
 
             // months
+            case "January":
             case "Jan":
                 translation = "Janvier";
                 break;
+            case "February":
             case "Feb":
                 translation = "Février";
                 break;
+            case "March":
             case "Mar":
                 translation = "Mars";
                 break;
+            case "April":
             case "Apr":
                 translation = "Avril";
                 break;
             case "May":
                 translation = "Mai";
                 break;
+            case "June":
             case "Jun":
                 translation = "Juin";
                 break;
+            case "July":
             case "Jul":
                 translation = "Juillet";
                 break;
+            case "August":
             case "Aug":
                 translation = "Août";
                 break;
+            case "September":
             case "Sep":
                 translation = "Septembre";
                 break;
+            case "October":
             case "Oct":
                 translation = "Octobre";
                 break;
+            case "November":
             case "Nov":
                 translation = "Novembre";
                 break;
+            case "December":
             case "Dec":
                 translation = "Décembre";
                 break;
-
-
         }
         if (label[1]) {
-            return translation + " " + label[1];
+            if(d.getDay() == 0) {
+                return "Dim " + label[1] + " " + translation;
+            } else {
+                return translation + " " + label[1];
+            }
         } else {
             return translation;
         }
