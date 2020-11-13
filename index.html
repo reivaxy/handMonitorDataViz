@@ -6,15 +6,12 @@
 <body>
 <h1 id="title" style="display:none"></h1>
 <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
-    <p>Drag one or more files to this Drop Zone ...</p>
+    <div id="dragndrop">Faites glisser un fichier et lachez le dans cette zone</div>
+    <div id="download">Téléchargez ce <a href="2020_07.csv"> fichier de test</a></div>
 </div>
 <div>
-
-    <div class="row">
+    <div class="graph">
         <div id="chart_placeholder">
-            <input type="range" id="slider">
-            <button type="button" class="btn btn-default zoombutton" id="zoom_in"><i class="fa fa-plus"></i></button>
-            <button type="button" class="btn btn-default zoombutton" id="zoom_out"><i class="fa fa-minus"></i></button>
         </div>
     </div>
 </div>
@@ -28,12 +25,12 @@
         ev.preventDefault();
     }
 
-    function updateTitle(fileName) {
-        let fileParts = fileName.split('.');
-        let dateParts = fileParts[0].split('_');
-        let mois = ["", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août",
-            "Septembre", "Octobre", "Novembre", "Décembre"][+dateParts[1]];
-        $("#title").text("Données de " + mois + " " + dateParts[0]);
+    function updateTitle(date) {
+        let m = date.getMonth();
+        let y = date.getFullYear();
+        let month = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août",
+            "Septembre", "Octobre", "Novembre", "Décembre"][m];
+        $("#title").text("Données de " + month + " " + y);
         $("#title").show();
     }
 
@@ -54,6 +51,9 @@
                 let jData = {
                     date: parseDate(lineData[0]),
                     value: +lineData[1]
+                }
+                if(i == 0) {
+                    updateTitle(jData.date);
                 }
                 if (i != 0 && previous != jData.value) {
                     dataSet.push({
@@ -82,7 +82,6 @@
                 if (ev.dataTransfer.items[i].kind === 'file') {
                     var file = ev.dataTransfer.items[i].getAsFile();
                     console.log('... file[' + i + '].name = ' + file.name);
-                    updateTitle(file.name);
                     if (file.type.indexOf("application/vnd.ms-excel") == 0 ||
                         file.type.indexOf("text/plain") == 0) {
                         processFile(file);
@@ -103,8 +102,8 @@
     }
 
     var margin = {top: 10, right: 10, bottom: 100, left: 40},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        width = 900 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%d/%m/%Y %H:%M:%S").parse;
 
@@ -224,16 +223,6 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .call(zoom);
 
-    const zoomButtons = d3.selectAll('.zoombutton')
-        .on('click', zoomClick);
-
-    const slider = d3.selectAll('#slider')
-        .attr("value", 1)
-        .attr("min", 1)
-        .attr("max", 100)
-        .attr("step", .5)
-        .on("input", slided);
-
     function processData(data) {
         x.domain(d3.extent(data.map(function (d) {
             return d.date;
@@ -265,26 +254,6 @@
     function draw() {
         focus.select(".area").attr("d", area);
         focus.select(".x.axis").call(xAxis);
-        d3.select('#slider').property('value', zoom.scale());
-    }
-
-    function slided(d) {
-        var center = [width / 2, height / 2],
-            extent = zoom.scaleExtent(),
-            translate = zoom.translate(),
-            translate0 = [],
-            l = [],
-            view = {x: translate[0], y: translate[1], k: zoom.scale()};
-
-        d3.event.preventDefault();
-
-        translate0 = [(center[0] - view.x) / view.k, (center[1] - view.y) / view.k];
-        view.k = d3.select(this).property("value");
-        l = [translate0[0] * view.k + view.x, translate0[1] * view.k + view.y];
-
-        view.x += center[0] - l[0];
-        view.y += center[1] - l[1];
-        interpolateZoom([view.x, view.y], view.k, 0);
     }
 
     function interpolateZoom(translate, scale, duration) {
@@ -299,35 +268,6 @@
                 zoom.event(focus);
             };
         });
-    }
-
-    function zoomClick() {
-        var clicked = d3.event.target,
-            direction = 1,
-            factor = 0.5,
-            target_zoom = 1,
-            center = [width / 2, height / 2],
-            extent = zoom.scaleExtent(),
-            translate = zoom.translate(),
-            translate0 = [],
-            l = [],
-            view = {x: translate[0], y: translate[1], k: zoom.scale()};
-
-        d3.event.preventDefault();
-        direction = (this.id === 'zoom_in') ? 1 : -1;
-        target_zoom = zoom.scale() * (1 + factor * direction);
-
-        if (target_zoom < extent[0] || target_zoom > extent[1]) {
-            return false;
-        }
-
-        translate0 = [(center[0] - view.x) / view.k, (center[1] - view.y) / view.k];
-        view.k = target_zoom;
-        l = [translate0[0] * view.k + view.x, translate0[1] * view.k + view.y];
-
-        view.x += center[0] - l[0];
-        view.y += center[1] - l[1];
-        interpolateZoom([view.x, view.y], view.k, 100);
     }
 
 </script>

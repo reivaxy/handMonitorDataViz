@@ -7,6 +7,13 @@ svg {
     clip-path: url(#clip);
 }
 
+body {
+    background-image: url("../img/logo.png");
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-size: 250px;
+    background-color: lightgray;
+}
 .axis path,
 .axis line {
     fill: none;
@@ -34,41 +41,33 @@ rect.pane {
     position: relative;
 }
 
-input[type="range"] {
-    width: 366px;
-    position: absolute;
-    right: -162px;
-    top: 197px;
-    /*     display: inline; */
-    -webkit-transform: rotate(-90deg);
-    transform: rotate(-90deg);
-}
-
-#zoom_in {
-    position: absolute;
-    top: 0px;
-    right: 10px;
-}
-
-
-#zoom_out {
-    position: absolute;
-    top: 386px;
-    right: 9px;
-}
-
-.dropdown {
-    position: absolute;
-    top: 20px;
-    right: 50px;
-    /*     z-index: -1; */
+.graph {
+    padding-top: 100px;
 }
 
 #drop_zone {
-    border: 5px solid blue;
-    width:  200px;
-    height: 100px;
+    border: 2px solid blue;
+    position: fixed;
+    top:2px;
+    left:2px;
+    right:2px;
+    bottom:2px;
+    text-align: center;
+    vertical-align: center;
+}
+#download {
+    position:absolute;
+    bottom:10px;
+    left:0;
+    right:0;
+    text-align: center;
+}
+#dragndrop {
+    padding-top: calc(30%);
 }
 g.x.axis .tick text {
     transform: translateY(15px) translateX(-15px) rotate(-45deg);
+}
+h1 {
+    text-align: center;
 }
