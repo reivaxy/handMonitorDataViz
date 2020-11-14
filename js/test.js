@@ -66,20 +66,36 @@ function testDayCounter() {
   minutes = Math.round((now - beginingOfDay) / 60000) ;
   console.assert(dayCounter.intervals.length === 1);
   console.assert(dayCounter.getMinuteCount() === minutes);
-  
+ 
 }
 
+function testFirstDay() {
+  let now = new Date();
+  let f = firstMonthDay(now);
+  console.assert(f.getDate() === 1);
+  console.assert(f.getMonth() === now.getMonth());
+  console.assert(f.getFullYear() === now.getFullYear());
+}
 
+function testLastDay() {
+  let now = new Date('November 15, 2020 10:11:00') ;
+  let f = lastMonthDay(now);
+  console.assert(f.getMonth() === now.getMonth());
+  console.assert(f.getFullYear() === now.getFullYear());
+  console.assert(f.getDate() === 30);
+}
 
-
-
-
-
-
-
-
-
-
+function testDayCollection() {
+  let now = new Date('November 15, 2020 10:11:00');
+  let col = new DayCollection();
+  col.init(now);
+  let days = col.getDays();
+  let firstDay = firstMonthDay(now);
+  let lastDay = lastMonthDay(now);
+  console.assert(days[DayCollection.dayId(firstDay)].getMinuteCount() === 0);
+  console.assert(days[DayCollection.dayId(lastDay)].getMinuteCount() === 0);
+  
+}
 
 function run(test) {
   let name = test.name;
@@ -89,4 +105,7 @@ function run(test) {
 
 run(testInterval);
 run(testDayCounter);
+run(testFirstDay);
+run(testLastDay);
+run(testDayCollection);
 $("#results").append($("<div>").text("Done"));

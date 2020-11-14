@@ -45,10 +45,6 @@ rect.pane {
     pointer-events: all;
 }
 
-.graph {
-    padding-top: 100px;
-}
-
 #onOffGraph g.x.axis .tick text {
     transform: translateY(15px) translateX(-15px) rotate(-45deg);
 }
@@ -76,4 +72,10 @@ rect.pane {
 
 h1 {
     text-align: center;
+}
+h2 {
+    display:none;
+}
+body.init h2 {
+    display: block;
 }

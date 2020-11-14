@@ -13,6 +13,21 @@ function date24h(dateTime) {
   
 }
 
+function firstMonthDay(dateTime) {
+  let d = date0h(dateTime).setDate(1);
+  return new Date(d);
+}
+
+function lastMonthDay(dateTime) {
+  let d = date0h(dateTime).setMonth(dateTime.getMonth() + 1);
+  d = new Date(d).setDate(0);
+  return new Date(d);
+}
+
+function nextDay(dateTime) {
+  return date24h(dateTime);  
+}
+
 function translateD3DateTicks(date, offset, tickLabel) {
   let label = tickLabel.split(' ');
   let translation = label[0];

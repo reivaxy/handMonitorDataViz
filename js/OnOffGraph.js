@@ -13,11 +13,10 @@ class OnOffGraph {
     let _self = this;
     this.graphSelector = graphSelector;
 
-    let margin = {top: 10, right: 50, bottom: 100, left: 50},
+    let margin = {top: 10, right: 100, bottom: 100, left: 100},
       width = window.innerWidth - margin.left - margin.right;
 
-    this.height = 400 - margin.top - margin.bottom;
-
+    this.height = 200 - margin.top - margin.bottom;
 
     this.x = d3.time.scale().range([0, width]);
     this.y = d3.scale.linear().range([this.height, 0]);

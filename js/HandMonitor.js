@@ -23,7 +23,7 @@ class HandMonitor {
     let month = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août",
       "Septembre", "Octobre", "Novembre", "Décembre"][m];
     $(this.titleSelector).text("Données de " + month + " " + y);
-    $(this.titleSelector).show();
+    $(document.body).addClass("init");
   }
 
   processFile(file) {
