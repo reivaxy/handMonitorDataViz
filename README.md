@@ -7,6 +7,7 @@ It will soon also compute statistics like average number of minutes a device is 
 
 The web page can be hosted on a website, or loaded from the local computer, it does not need a web server and all the data is processed locally.
 
+You can try it [here](https://reivaxy.github.io/handMonitorDataViz)
 
 
 ![screen capture](resources/screenshot.png) 
