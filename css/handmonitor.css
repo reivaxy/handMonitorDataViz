@@ -45,8 +45,8 @@ rect.pane {
     pointer-events: all;
 }
 
-.graph {
-    padding-top: 100px;
+#onOffGraph g.x.axis .tick text {
+    transform: translateY(15px) translateX(-15px) rotate(-45deg);
 }
 
 #dropzone {
@@ -69,9 +69,13 @@ rect.pane {
 #dragndrop {
     padding-top: calc(30%);
 }
-g.x.axis .tick text {
-    transform: translateY(15px) translateX(-15px) rotate(-45deg);
-}
+
 h1 {
     text-align: center;
+}
+h2 {
+    display:none;
+}
+body.init h2 {
+    display: block;
 }

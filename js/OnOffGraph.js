@@ -13,11 +13,10 @@ class OnOffGraph {
     let _self = this;
     this.graphSelector = graphSelector;
 
-    let margin = {top: 10, right: 50, bottom: 100, left: 50},
+    let margin = {top: 10, right: 100, bottom: 100, left: 100},
       width = window.innerWidth - margin.left - margin.right;
 
-    this.height = 400 - margin.top - margin.bottom;
-
+    this.height = 200 - margin.top - margin.bottom;
 
     this.x = d3.time.scale().range([0, width]);
     this.y = d3.scale.linear().range([this.height, 0]);
@@ -31,89 +30,8 @@ class OnOffGraph {
 
     let defaultTick = this.x.tickFormat();
     this.xAxis.tickFormat(function (d, i) {
-      let label = defaultTick(d, i).split(' ');
-      let translation = label[0];
-      switch (label[0]) {
-        case "Mon":
-          translation = "Lundi";
-          break;
-        case "Tue":
-          translation = "Mardi";
-          break;
-        case "Wed":
-          translation = "Mercredi";
-          break;
-        case "Thu":
-          translation = "Jeudi";
-          break;
-        case "Fri":
-          translation = "Vendredi";
-          break;
-        case "Sat":
-          translation = "Samedi";
-          break;
-        case "Sun":
-          translation = "Dimanche";
-          break;
-
-        // months
-        case "January":
-        case "Jan":
-          translation = "Janvier";
-          break;
-        case "February":
-        case "Feb":
-          translation = "Février";
-          break;
-        case "March":
-        case "Mar":
-          translation = "Mars";
-          break;
-        case "April":
-        case "Apr":
-          translation = "Avril";
-          break;
-        case "May":
-          translation = "Mai";
-          break;
-        case "June":
-        case "Jun":
-          translation = "Juin";
-          break;
-        case "July":
-        case "Jul":
-          translation = "Juillet";
-          break;
-        case "August":
-        case "Aug":
-          translation = "Août";
-          break;
-        case "September":
-        case "Sep":
-          translation = "Septembre";
-          break;
-        case "October":
-        case "Oct":
-          translation = "Octobre";
-          break;
-        case "November":
-        case "Nov":
-          translation = "Novembre";
-          break;
-        case "December":
-        case "Dec":
-          translation = "Décembre";
-          break;
-      }
-      if (label[1]) {
-        if (d.getDay() === 0) {
-          return "Dim " + label[1] + " " + translation;
-        } else {
-          return translation + " " + label[1];
-        }
-      } else {
-        return translation;
-      }
+      let label = defaultTick(d, i);
+      return translateD3DateTicks(d, i, label);
     });
 
     this.area = d3.svg.area()
@@ -140,7 +58,7 @@ class OnOffGraph {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     this.zoom = d3.behavior.zoom()
-      .on("zoom", this.draw);
+      .on("zoom", function() {_self.draw()});
 
     // Add rect cover the zoomed graph and attach zoom event.
     let rect = svg.append("svg:rect")
@@ -151,7 +69,6 @@ class OnOffGraph {
       .call(this.zoom);
 
   }
-
 
   interpolateZoom(translate, scale, duration) {
     let self = this;
@@ -168,11 +85,25 @@ class OnOffGraph {
   }
 
   draw() {
-    this.focus.select(".area").attr("d", area);
+    this.focus.select(".area").attr("d", this.area);
     this.focus.select(".x.axis").call(this.xAxis);
   }
   
-  processData(data) {
+  processData(dataSet) {
+    let data = [];
+    let previous = 0;
+    for(let i=0; i < dataSet.length; i++) {
+      let jData = dataSet[i];
+      if (i != 0 && previous != jData.value) {
+        data.push({
+          date: jData.date,
+          value: previous
+        })
+      }
+      data.push(jData);
+      previous = +jData.value;
+    }
+    
     this.x.domain(d3.extent(data.map(function (d) {
       return d.date;
     })));
