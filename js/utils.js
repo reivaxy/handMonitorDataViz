@@ -1,5 +1,3 @@
-
-
 function date0h(dateTime) {
   let d = new Date(dateTime);
   d.setHours(0, 0, 0, 0);
@@ -9,8 +7,8 @@ function date0h(dateTime) {
 function date24h(dateTime) {
   let d = date0h(dateTime);
   d = new Date(d.setDate(d.getDate() + 1));
-  return new Date(d);  
-  
+  return new Date(d);
+
 }
 
 function firstMonthDay(dateTime) {
@@ -25,7 +23,14 @@ function lastMonthDay(dateTime) {
 }
 
 function nextDay(dateTime) {
-  return date24h(dateTime);  
+  return date24h(dateTime);
+}
+
+function toHMN(mn) {
+  let hours = Math.floor(mn / 60);
+  let min = "0" + (mn - hours * 60);
+  min = min.substring(min.length - 2);
+  return hours + "h" + min + "mn\n" + mn + "mn";
 }
 
 function translateD3DateTicks(date, offset, tickLabel) {
@@ -111,6 +116,6 @@ function translateD3DateTicks(date, offset, tickLabel) {
     }
   } else {
     return translation;
-  }  
-  
+  }
+
 }

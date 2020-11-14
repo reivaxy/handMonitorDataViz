@@ -22,10 +22,10 @@ class OnOffGraph {
     this.y = d3.scale.linear().range([this.height, 0]);
 
     this.xAxis = d3.svg.axis().scale(this.x).orient("bottom");
-    this.yAxis = d3.svg.axis().scale(this.y).orient("left");
+    this.yAxis = d3.svg.axis().scale(this.y).orient("left").ticks(1);
 
     this.yAxis.tickFormat(function (d, i) {
-      if (d === 1) return "porté"; else return "";
+      if (d === 1) return "utilisé"; else return "non utilisé";
     });
 
     let defaultTick = this.x.tickFormat();

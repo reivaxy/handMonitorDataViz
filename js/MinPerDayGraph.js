@@ -15,21 +15,23 @@ class MinPerDayGraph {
     this.graphSelector = graphSelector;
     this.dayCollection = new DayCollection();
 
-    let margin = {top: 10, right: 100, bottom: 100, left: 100},
-      width = window.innerWidth - margin.left - margin.right;
-
+    let margin = {top: 10, right: 100, bottom: 100, left: 100};
+    
+    this.width = window.innerWidth - margin.left - margin.right;
     this.height = 400 - margin.top - margin.bottom;
 
-    this.x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+    this.x = d3.scale.ordinal().rangeRoundBands([0, this.width], .05);
     this.y = d3.scale.linear().range([this.height, 0]);
+    this.yr = d3.scale.linear().range([this.height, 0]);
 
     this.xAxis = d3.svg.axis().scale(this.x).orient("bottom");
-    this.yAxis = d3.svg.axis().scale(this.y).orient("left").ticks(10);
+    this.yLAxis = d3.svg.axis().scale(this.y).orient("left").ticks(10);
+    this.yRAxis = d3.svg.axis().scale(this.yr).orient("right").ticks(24);
 
     this.xAxis.tickFormat(d3.time.format("%d-%m-%Y"));
 
     this.svg = d3.select(this.graphSelector).append("svg")
-      .attr("width", width + margin.left + margin.right)
+      .attr("width", this.width + margin.left + margin.right)
       .attr("height", this.height + margin.top + margin.bottom)
       .append("g")
       .attr("transform",
@@ -76,6 +78,9 @@ class MinPerDayGraph {
     this.y.domain([0, d3.max(data, function (d) {
       return d.value;
     })]);
+    this.yr.domain([0, d3.max(data, function (d) {
+      return Math.round(d.value / 60);
+    })]);
     this.svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + this.height + ")")
@@ -88,18 +93,29 @@ class MinPerDayGraph {
 
     this.svg.append("g")
       .attr("class", "y axis")
-      .call(this.yAxis)
+      .call(this.yLAxis)
       .append("text")
-      .attr("transform", "rotate(-90)")
+      .attr("transform", "rotate(-90) translate(0, -3)")
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Minutes");
+    
+    this.svg.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + this.width + ", 0)")
+      .call(this.yRAxis)
+      .append("text")
+      .attr("transform", "rotate(-90) translate(0, -12)")
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Heures");
+    
     let _self = this;
     this.svg.selectAll("bar")
       .data(data)
       .enter().append("rect")
-      .style("fill", "steelblue")
+      .attr("class", "bar")
       .attr("x", function (d) {
         return _self.x(d.date);
       })
@@ -109,7 +125,8 @@ class MinPerDayGraph {
       })
       .attr("height", function (d) {
         return _self.height - _self.y(d.value);
-      });
+      })
+      .append("title").text(d => toHMN(d.value));
 
   }
 }

@@ -18,6 +18,9 @@ svg {
     clip-path: url(#clip);
 }
 
+.bar {
+    fill: #0088ce;
+}
 body {
     background-image: url("../img/logo.png");
     background-position: top left;
