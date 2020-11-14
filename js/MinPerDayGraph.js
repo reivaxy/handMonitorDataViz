@@ -19,6 +19,12 @@ class MinPerDayGraph {
   processData(dataSet) {
     for(let i=0; i < dataSet.length; i++) {
       let record = dataSet[i];
+      // Ignore the events where measure is 0, it means
+      // the device was plugged for charging, and no longer
+      // detecting.
+      if(record.measure == 0) {
+        continue
+      }
       if(record.value === 1) {
         this.dayCollection.on(record.date);
       } else {
@@ -94,10 +100,14 @@ class DayCounter {
   }
   
   off(dateTime) {
-    if(this.currentInterval != null) {
-      this.currentInterval.setStop(dateTime);
-      this.currentInterval = null;
+    // If we get an 'off' while there was no current interval, it means
+    // it was 'on' since day before: add interval starting a 0h
+    if(this.currentInterval == null) {
+      this.currentInterval = new Interval(date0h(dateTime));      
+      this.intervals.push(this.currentInterval);      
     }
+    this.currentInterval.setStop(dateTime);
+    this.currentInterval = null;
   }
   
   getMinuteCount() {

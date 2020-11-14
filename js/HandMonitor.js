@@ -44,7 +44,8 @@ class HandMonitor {
         let theDate = _self.parseDate(lineData[0]);
         let jData = {
           date: theDate,
-          value: +lineData[1]
+          value: +lineData[1],
+          measure: +lineData[2]
         }
         if (i == 0) {
           _self.updateTitle(jData.date);
