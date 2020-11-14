@@ -9,11 +9,12 @@
 * =============================================================================================================================================
 */
 class HandMonitor {
-  constructor(titleSelector, onOffGraphSelector) {
+  constructor(titleSelector, onOffGraphSelector, minPerDayGraphSelector) {
     let _self = this;
     this.titleSelector = titleSelector;
-    this.onOffGraph = new OnOffGraph(onOffGraphSelector);
     this.parseDate = d3.time.format("%d/%m/%Y %H:%M:%S").parse;
+    this.onOffGraph = new OnOffGraph(onOffGraphSelector);
+    this.minPerDayGraph = new MinPerDayGraph(minPerDayGraphSelector);
   }
 
   updateTitle(aDate) {
@@ -48,15 +49,10 @@ class HandMonitor {
         if (i == 0) {
           _self.updateTitle(jData.date);
         }
-        if (i != 0 && previous != jData.value) {
-          dataSet.push({
-            date: theDate,
-            value: previous
-          })
-        }
-        previous = +lineData[1];
+
         dataSet.push(jData);
       }
+      _self.minPerDayGraph.processData(dataSet);
       _self.onOffGraph.processData(dataSet);
     }
     reader.readAsText(file);

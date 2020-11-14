@@ -9,7 +9,7 @@
 * =============================================================================================================================================
 */
 
-let handmonitor = new HandMonitor("#title", "#chart_placeholder");
+let handmonitor = new HandMonitor("#title", "#onOffGraph", "#minPerDayGraph");
 let dropZone = new DropZone("#dropzone", file => handmonitor.processFile(file));
 
 

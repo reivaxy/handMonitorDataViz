@@ -140,7 +140,7 @@ class OnOffGraph {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     this.zoom = d3.behavior.zoom()
-      .on("zoom", this.draw);
+      .on("zoom", function() {_self.draw()});
 
     // Add rect cover the zoomed graph and attach zoom event.
     let rect = svg.append("svg:rect")
@@ -151,7 +151,6 @@ class OnOffGraph {
       .call(this.zoom);
 
   }
-
 
   interpolateZoom(translate, scale, duration) {
     let self = this;
@@ -168,11 +167,25 @@ class OnOffGraph {
   }
 
   draw() {
-    this.focus.select(".area").attr("d", area);
+    this.focus.select(".area").attr("d", this.area);
     this.focus.select(".x.axis").call(this.xAxis);
   }
   
-  processData(data) {
+  processData(dataSet) {
+    let data = [];
+    let previous = 0;
+    for(let i=0; i < dataSet.length; i++) {
+      let jData = dataSet[i];
+      if (i != 0 && previous != jData.value) {
+        data.push({
+          date: jData.date,
+          value: previous
+        })
+      }
+      data.push(jData);
+      previous = +jData.value;
+    }
+    
     this.x.domain(d3.extent(data.map(function (d) {
       return d.date;
     })));
