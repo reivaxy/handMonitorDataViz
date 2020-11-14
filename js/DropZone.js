@@ -1,3 +1,14 @@
+/* 
+*  =============================================================================================================================================
+*  Project : Hand Monitor Data visualisation e-Nable France
+*  Author  : Xavier Grosjean
+* 
+*  ---------------------------------------------------------------------------------------------------------------------------------------------
+*  Description : Class handling the drop zone for a file downloaded from the handMonitor device
+* 
+* =============================================================================================================================================
+*/
+
 class DropZone {
   constructor(dropZoneSelector, dropCallBack) {
     this.dropZoneSelector = dropZoneSelector;
