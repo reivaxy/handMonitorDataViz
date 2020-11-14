@@ -38,7 +38,7 @@ rect.pane {
     padding-top: 100px;
 }
 
-#drop_zone {
+#dropzone {
     border: 2px solid blue;
     position: fixed;
     top:2px;
