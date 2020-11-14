@@ -49,7 +49,7 @@ class MinPerDayGraph {
       // the device was plugged for charging, and no longer
       // detecting.
       if (record.measure == 0) {
-        continue
+        continue;
       }
       if (record.value === 1) {
         this.dayCollection.on(record.date);

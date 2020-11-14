@@ -42,6 +42,9 @@ class HandMonitor {
           lineData[0] = dDate + " " + lineData[0];
         }
         let theDate = _self.parseDate(lineData[0]);
+        if (!theDate) {
+          continue;
+        }
         let jData = {
           date: theDate,
           value: +lineData[1],
