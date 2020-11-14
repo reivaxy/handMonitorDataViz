@@ -59,6 +59,14 @@ function testDayCounter() {
   dayCounter.off(new Date(now.getTime() + 60000));
   console.assert(dayCounter.getMinuteCount() === 2);
   console.assert(dayCounter.intervals.length === 2);
+  
+  // Test that when starting with an off event, we get a start time at 0h
+  dayCounter = new DayCounter(now);
+  dayCounter.off(now);
+  minutes = Math.round((now - beginingOfDay) / 60000) ;
+  console.assert(dayCounter.intervals.length === 1);
+  console.assert(dayCounter.getMinuteCount() === minutes);
+  
 }
 
 
@@ -79,7 +87,6 @@ function run(test) {
   test.call();
 }
 
-run(testDayId);
 run(testInterval);
 run(testDayCounter);
 $("#results").append($("<div>").text("Done"));
