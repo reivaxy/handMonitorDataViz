@@ -9,8 +9,19 @@
 * =============================================================================================================================================
 */
 
-let handmonitor = new HandMonitor("#title", "#onOffGraph", "#minPerDayGraph");
-let dropZone = new DropZone("#dropzone", file => handmonitor.processFile(file));
+let onOffGraphSelector = "#onOffGraph";
+let minPerDayGraphSelector = "#minPerDayGraph";
+let dropZoneSelector = "#dropzone";
+
+let handmonitor = new HandMonitor("#title", onOffGraphSelector, minPerDayGraphSelector);
+new DropZone(dropZoneSelector, file => handmonitor.processFile(file));
+
+function restart() {
+  $(onOffGraphSelector).empty();
+  $(minPerDayGraphSelector).empty();
+  $(document.body).removeClass("init");
+  handmonitor = new HandMonitor("#title", onOffGraphSelector, minPerDayGraphSelector);
+}
 
 
 

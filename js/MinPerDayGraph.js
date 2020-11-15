@@ -42,14 +42,32 @@ class MinPerDayGraph {
   processData(dataSet) {
     for (let i = 0; i < dataSet.length; i++) {
       let record = dataSet[i];
-      if (i == 0) {
+      if (i === 0) {
         this.dayCollection.init(record.date);
       }
-      // Ignore the events where measure is 0, it means
+      // When measure is 0, it means
       // the device was plugged for charging, and no longer
       // detecting.
-      if (record.measure == 0) {
-        continue;
+      // Ignore such records
+      // unless current day has a currently started and not ended interval: end it
+      // (0,1024) seems to be a device glitch when plugging to charge, met once.
+      if (record.measure === 0 || (record.measure === 1024 && record.value === 0)) {
+        let currentDay = this.dayCollection.getCurrentDay();
+        if(currentDay != null) {
+          let lastInterval = currentDay.getLastInterval();
+          if(lastInterval != null) {
+            if(!isMidnight(lastInterval.stop)) {
+              // Last interval of current day already has a stopped date
+              continue;
+            }
+          } else {
+            // currentDay has no interval: ignore record
+            continue;
+          }
+        } else {
+          // No current day: ignore record
+          continue;
+        }
       }
       if (record.value === 1) {
         this.dayCollection.on(record.date);
@@ -57,6 +75,8 @@ class MinPerDayGraph {
         this.dayCollection.off(record.date);
       }
     }
+    // fix some special cases
+    this.dayCollection.postProcess();
     this.displayData();
   }
 
@@ -135,6 +155,7 @@ class MinPerDayGraph {
 class DayCollection {
   constructor() {
     this.days = {};
+    this.currentDay = null;
   }
 
   init(dateTime) {
@@ -146,19 +167,27 @@ class DayCollection {
     }
   }
 
+  getCurrentDay() {
+    return this.currentDay;
+  }
+  
   on(dateTime) {
     let id = DayCollection.dayId(dateTime);
+    // This shouldn't happen
     if (!(id in this.days)) {
       this.days[id] = new DayCounter(dateTime);
     }
+    this.currentDay = this.days[id];
     this.days[id].on(dateTime);
   }
 
   off(dateTime) {
     let id = DayCollection.dayId(dateTime);
+    // This shouldn't happen
     if (!(id in this.days)) {
       this.days[id] = new DayCounter(dateTime);
     }
+    this.currentDay = this.days[id];
     this.days[id].off(dateTime);
   }
 
@@ -166,6 +195,27 @@ class DayCollection {
     return this.days;
   }
 
+  postProcess() {
+    let previousDay = null;
+    for(let i in this.days) {
+      let day = this.days[i];
+      
+      // A day with no interval whose previous day last interval stop time is exactly midnight
+      // is likely a day during which the device was 'on' the whole day
+      // Unlikely use case, but it happens with test devices that are set on a table for several days in a row...
+      // Since the multi day continuity is displayed on the "OnOffGraph", we want some homogeneity
+      if(previousDay != null && day.intervals.length === 0) {
+        let previousDayLastInterval = previousDay.getLastInterval();
+        if(previousDayLastInterval != null) {
+          if (isMidnight(previousDayLastInterval.stop)) {
+            day.on(day.dayBeginingDate);
+          }
+        }
+      }
+      previousDay = day;
+    }  
+  }
+  
   static dayId(dateTime) {
     // we want two digits, i.e. 01, 02, ... 10, 11, ...
     let month = "0" + (dateTime.getMonth() + 1);
@@ -215,6 +265,14 @@ class DayCounter {
       count += intervalCount;
     }
     return Math.round(count / 60000);
+  }
+  
+  getLastInterval() {
+    if(this.intervals.length > 0) {
+      return this.intervals[this.intervals.length - 1];
+    } else {
+      return null;
+    }
   }
 }
 

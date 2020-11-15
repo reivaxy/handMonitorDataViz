@@ -33,6 +33,14 @@ function toHMN(mn) {
   return hours + "h" + min + "mn\n" + mn + "mn";
 }
 
+function isMidnight(dateTime) {
+  return(dateTime.getHours() === 0
+        && dateTime.getMinutes() === 0
+        && dateTime.getSeconds() === 0
+        && dateTime.getMilliseconds() === 0
+        )     
+}
+
 function translateD3DateTicks(date, offset, tickLabel) {
   let label = tickLabel.split(' ');
   let translation = label[0];

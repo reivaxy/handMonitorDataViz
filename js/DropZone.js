@@ -23,7 +23,6 @@ class DropZone {
   
   dropHandler(evt) {
     let ev = evt.originalEvent;
-    $(this.dropZoneSelector).hide();
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
   
